@@ -1,4 +1,4 @@
-# Employee Portal-Sample
+# Employee Portal Sample
 
 ## Overview
 
