@@ -12,3 +12,30 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String
+  equipment Equipment[]
+  equipmentHistory EquipmentHistory[]
+}
+
+model Equipment {
+  id              Int                @id @default(autoincrement())
+  title           String
+  description     String
+  userId          Int?
+  user            User?              @relation(fields: [userId], references: [id])
+  equipmentHistory EquipmentHistory[]
+}
+
+model EquipmentHistory {
+  id              Int                @id @default(autoincrement())
+  equipmentId     Int
+  userId          Int
+  ownedFrom       DateTime
+  ownedUntil      DateTime?
+  equipment       Equipment          @relation(fields: [equipmentId], references: [id])
+  user            User               @relation(fields: [userId], references: [id])
+}
