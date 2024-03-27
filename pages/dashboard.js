@@ -13,6 +13,7 @@ const Dashboard = () => {
       if (!loading && !session) {
         router.push("/");
       }
+      console.log(session);
     }, [session, loading, router]);
 
     useEffect(() => {
@@ -31,42 +32,31 @@ const Dashboard = () => {
     if (loading || !session) {
         return <div>Loading...</div>;
     }
-
-    const renderTabContent = () => {
-        switch (activeTab) {
-            case 'equipment':
-                return (
-                  <div>
-                    <h1>Your Equipment</h1>
-                    <ul>
-                      {equipmentList.map((item) => (
-                        <li key={item.id}>{item.title}: {item.description}</li>
-                      ))}
-                    </ul>
-                  </div>
-                );
-            case 'training':
-                return <div>Training Content</div>;
-            case 'documents':
-                return <div>Documents Content</div>;
-            case 'policy':
-                return <div>Policy Content</div>;
-            default:
-                return <div>Equipment Content</div>;
-        }
-    };
+    const userName = session.user?.firstName || 'User';
 
     return (
         <div>
-            <nav>
-                <button onClick={() => setActiveTab('equipment')}>Equipment</button>
-                <button onClick={() => setActiveTab('training')}>Training</button>
-                <button onClick={() => setActiveTab('documents')}>Documents</button>
-                <button onClick={() => setActiveTab('policy')}>Policy</button>
-            </nav>
-            <main>
-                {renderTabContent()}
-            </main>
+            <header className="flex justify-center p-4">
+                <h2>{userName}'s Dashboard - Enerlites</h2>
+            </header>
+            <div>
+                <table className="table-auto w-1/3 mx-auto">
+                    <thead>
+                        <tr>
+                            <th className="px-2 py-1 border">Title</th>
+                            <th className="px-2 py-1 border">Serial Number</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {equipmentList.map((item) => (
+                        <tr key={item.id}>
+                            <td className="border px-2 py-1 text-center">{item.title}</td>
+                            <td className="border px-2 py-1 text-center">{item.description}</td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 };
