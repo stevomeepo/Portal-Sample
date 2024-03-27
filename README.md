@@ -7,7 +7,7 @@ This project aims to create an employee portal where users can track the company
 ## Technologies Used
 
 - **Frontend:** React
-- **Backend:** Node.js, Express
+- **Backend:** Node.js
 - **Database:** Prisma ORM
 - **Authentication:** JWT (JSON Web Tokens)
 
