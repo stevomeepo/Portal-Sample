@@ -1,0 +1,90 @@
+.hamburger {
+    display: block;
+    z-index: 50;
+    transform: scale(0.8);
+    cursor: pointer;
+  }
+  
+  .hamburger-box {
+    width: 40px;
+    height: 24px;
+    display: inline-block;
+    position: relative;
+  }
+  
+  .hamburger-inner,
+  .hamburger-inner::before,
+  .hamburger-inner::after {
+    background-color: #000; /* Change as needed */
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    border-radius: 4px;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .hamburger-inner {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  .hamburger-inner::before,
+  .hamburger-inner::after {
+    content: "";
+    display: block;
+  }
+  
+  .hamburger-inner::before {
+    top: -10px;
+  }
+  
+  .hamburger-inner::after {
+    bottom: -10px;
+  }
+  
+  .hamburger.is-active .hamburger-inner {
+    background-color: transparent;
+  }
+  
+  .hamburger.is-active .hamburger-inner::before {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+  
+  .hamburger.is-active .hamburger-inner::after {
+    transform: rotate(-45deg) translate(7px, -7px);
+  }
+  
+  /* Sidebar Styles */
+  .sidebar {
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px; /* Adjust width as needed */
+    background-color: #fff; /* Change as needed */
+    padding-top: 1rem;
+    z-index: 40;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  
+  /* Overlay when sidebar is open */
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 30;
+  }
+  
+  @media (min-width: 1024px) {
+    .hamburger {
+      display: none;
+    }
+  }

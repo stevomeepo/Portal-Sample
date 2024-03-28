@@ -1,9 +1,16 @@
 import { useSession, signOut } from "next-auth/react";
+import { useRouter } from 'next/router';
+import Sidebar from "./Sidebar";
 
 const Layout = ({ children }) => {
     const { data: session } = useSession();
+    const router = useRouter();
+
+    const isLoginPage = router.pathname === "/";
+
     return (
         <>
+            {!isLoginPage && <Sidebar />}
             <header>
                 {/* Other header content */}
                 {session && (

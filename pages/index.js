@@ -44,8 +44,8 @@ export default function Home() {
 
   return (
     <div className="flex h-screen">
-      <div className="w-1/2 flex justify-center items-center bg-cover bg-center" style={{ backgroundImage: "url('/backgroundDesign.jpg')" }}>
-        <div className="w-full max-w-xs px-4 py-8">
+      <div className="w-full md:w-1/2 flex justify-center items-center bg-cover bg-center" style={{ backgroundImage: "url('/backgroundDesign.jpg')" }}>
+        <div className="w-full max-w-xs px-4 py-8 mx-auto">
           <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
             <div className="mb-4">
               <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
@@ -88,7 +88,7 @@ export default function Home() {
           </form>
         </div>
       </div>
-      <div className="w-1/2 flex flex-col justify-center items-center bg-black text-white px-4 py-8">
+      <div className="w-1/2 hidden md:flex flex-col justify-center items-center bg-black text-white px-4 py-8">
         <div className="mb-8 text-center">
           <h2 className="text-4xl font-bold mb-4">Welcome to</h2>
           <h2 className="text-4xl font-bold mb-4">Enerlites Employee Portal</h2>
