@@ -45,6 +45,7 @@ const Dashboard = () => {
                         <tr>
                             <th className="px-2 py-1 border">Title</th>
                             <th className="px-2 py-1 border">Serial Number</th>
+                            {session.user.isAdmin && <th className="px-2 py-1 border">Owner</th>}
                         </tr>
                     </thead>
                     <tbody>
@@ -52,6 +53,11 @@ const Dashboard = () => {
                         <tr key={item.id}>
                             <td className="border px-2 py-1 text-center">{item.title}</td>
                             <td className="border px-2 py-1 text-center">{item.description}</td>
+                            {session.user.isAdmin && (
+                                <td className="border px-2 py-1 text-center">
+                                    {item.user ? `${item.user.firstName} ${item.user.lastName}` : 'N/A'}
+                                </td>
+                            )}
                         </tr>
                     ))}
                     </tbody>

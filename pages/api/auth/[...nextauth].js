@@ -41,6 +41,7 @@ export default NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.uid = user.id;
+        token.isAdmin = user.isAdmin;
       }
       return token;
     },
@@ -52,6 +53,7 @@ export default NextAuth({
         if (user) {
           session.user.name = user.firstName;
           session.user.firstName = user.firstName;
+          session.user.isAdmin = user.isAdmin;
         }
         return session;
     },

@@ -16,7 +16,3 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-
-h2 {
-    font-family: 'Lora', serif; /* Updated to Lora */
-}

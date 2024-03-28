@@ -57,7 +57,7 @@ export default function Home() {
               <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
                 Password
               </label>
-              <input name="password" type={showPassword ? "text" : "password"} placeholder="******************" required className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" />
+              <input name="password" type={showPassword ? "text" : "password"} placeholder="************" required className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" />
               <input id="showPasswordCheckbox" type="checkbox" checked={showPassword} onChange={() => setShowPassword(!showPassword)} className="opacity-0 absolute h-4 w-4" />
               <label htmlFor="showPasswordCheckbox" className="flex items-center cursor-pointer">
                 <span className="flex items-center justify-center h-4 w-4 border border-gray-300 rounded bg-white mr-2">
@@ -88,7 +88,7 @@ export default function Home() {
           </form>
         </div>
       </div>
-      <div className="w-1/2 flex flex-col justify-center items-center bg-purple-900 text-white px-4 py-8">
+      <div className="w-1/2 flex flex-col justify-center items-center bg-black text-white px-4 py-8">
         <div className="mb-8 text-center">
           <h2 className="text-4xl font-bold mb-4">Welcome to</h2>
           <h2 className="text-4xl font-bold mb-4">Enerlites Employee Portal</h2>
