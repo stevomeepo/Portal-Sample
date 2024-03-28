@@ -15,7 +15,7 @@ const Dashboard = () => {
     }, [session, loading, router]);
 
     if (loading || !session) {
-        return <div>Loading...</div>;
+        return <div className="flex justify-center items-center h-screen">Loading...</div>
     }
     const userName = session.user?.firstName || 'User';
 

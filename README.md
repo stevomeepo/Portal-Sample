@@ -4,6 +4,8 @@
 
 This project aims to create an employee portal where users can track the company equipment assigned to them. It includes functionalities for users to view their equipment and for admins to manage users and their equipment. The project is built using JavaScript, React for the frontend, and Node.js with Prisma for the backend.
 
+![Sample Login Portal](/public/sample-login-portal.PNG)
+
 ## Technologies Used
 
 - **Frontend:** React
