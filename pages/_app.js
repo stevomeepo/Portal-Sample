@@ -1,6 +1,7 @@
 import { SessionProvider } from "next-auth/react";
 import Layout from '../components/Layout';
 import '../styles/globals.css';
+import '../styles/hamburger.css'
 
 function MyApp({ Component, pageProps }) {
   return (
