@@ -31,11 +31,23 @@
   justify-content: center;
   align-items: center;
   height: 50px; /* Adjust based on your icon size */
+  font-size: 24px; /* Increase the font size to make icons larger */
+  transition: transform 0.3s ease; /* Smooth transition for the transform */
+}
+
+.sidebar-icon:hover {
+  transform: scale(1.1); /* Increase the size of the icon slightly on hover */
 }
 
 .sidebar-link-text {
   display: none; /* Hide text labels in collapsed state */
+  margin-left: 8px; /* Space between icon and text */
+  font-size: 16px; /* Explicitly set the text size */
   transition: display 0.3s ease;
+}
+
+.sidebar-open .sidebar-link-text {
+  display: inline; /* Show text labels when sidebar is open */
 }
 
 .with-sidebar .flex-1 {
@@ -73,4 +85,47 @@
 .hamburger.is-active .hamburger-inner::before,
 .hamburger.is-active .hamburger-inner::after {
     background-color: purple;
+}
+
+/* Existing styles... */
+
+.logout-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 15px;
+  background: white;
+  border-radius: 8px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease; /* Smooth transition for the container */
+}
+
+.logout-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease; /* Smooth transition for the button */
+}
+
+.logout-text {
+  margin-right: 5px;
+  transition: opacity 0.3s ease; /* Transition for fading out the text */
+}
+
+.logout-icon {
+  transition: transform 0.3s ease; /* Transition for moving the icon */
+}
+
+.logout-container:hover .logout-text {
+  opacity: 0; /* Fade out the text on hover */
+}
+
+.logout-container:hover .logout-icon {
+  transform: translateX(220%);
 }

@@ -16,3 +16,28 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
+
+.link-with-transition {
+  position: relative;
+  color: #6b46c1; /* Tailwind's purple-600 */
+  text-decoration: none;
+}
+  
+.link-with-transition::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 1px;
+  bottom: -2px;
+  left: 0;
+  background-color: #6b46c1; /* Tailwind's purple-600 */
+  transition: width 0.3s ease;
+}
+  
+.link-with-transition:hover::after {
+  width: 100%;
+}
+
+.text-center {
+  text-align: center;
+}

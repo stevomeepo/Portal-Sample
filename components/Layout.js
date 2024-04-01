@@ -1,6 +1,8 @@
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from 'next/router';
 import Sidebar from "./Sidebar";
+import Link from 'next/link';
+import { PiSignOutBold } from 'react-icons/pi';
 
 const Layout = ({ children }) => {
     const { data: session } = useSession();
@@ -16,13 +18,25 @@ const Layout = ({ children }) => {
                 <header>
                     {/* Header content */}
                     {session && (
-                        <button onClick={() => signOut()} style={{ position: 'absolute', top: 0, right: 0, margin: '10px' }}>
-                            Sign Out
-                        </button>
+                        <div className="logout-container">
+                            <button onClick={() => signOut()} className="logout-button">
+                                <div className="logout-icon">
+                                    <PiSignOutBold size="18px" />
+                                </div>
+                                <div className="logout-text" style={{ marginLeft: '10px' }}>Sign Out</div>
+                            </button>
+                        </div>
                     )}
                 </header>
                 <main className="flex-1 overflow-y-auto">
-                    {children}
+                    <div className="min-h-screen bg-gray-100">
+                        {/* {!isLoginPage && (
+                            <Link href="/dashboard">
+                                <img src="/enerlites.jpg" alt="Logo" className="mx-auto pt-4 cursor-pointer" style={{ width: '100px', height: 'auto' }} />
+                            </Link>
+                        )} */}
+                        {children}
+                    </div>
                 </main>
                 {/* Footer or other elements */}
             </div>

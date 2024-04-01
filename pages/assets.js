@@ -1,50 +1,73 @@
 import { useSession, getSession } from "next-auth/react";
 import { PrismaClient } from "@prisma/client";
-import Sidebar from '../components/Sidebar';
 import Link from 'next/link';
+import { useState } from 'react';
 
 const prisma = new PrismaClient();
 
 export default function Assets({ equipment }) {
     const { data: session } = useSession();
+    console.log("Session:", session);
 
     if (!session) return <div>Access Denied</div>;
 
-    const headingText = session.user.isAdmin ? "Assets" : "Your Assets";
+    const removeUser = async (equipmentId) => {
+        try {
+            const response = await fetch('/api/removeUser', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ equipmentId }),
+                credentials: 'include',
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error: ${response.statusText}`);
+            }
+
+            const updatedEquipment = await response.json();
+            // Handle the response as needed, e.g., update state, show notification, etc.
+            console.log('User removed from equipment:', updatedEquipment);
+        } catch (error) {
+            console.error('Failed to remove user:', error);
+            // Handle errors, e.g., show error notification
+        }
+    };
 
     return (
         <div className="min-h-screen bg-gray-100 p-8">
-            <h2 className="text-xl font-semibold mb-4">Equipment</h2>
+            <h2 className="text-xl font-semibold mb-4">Assets</h2>
             <div className="rounded-lg border text-card-foreground bg-white shadow-md">
                 <div className="p-0">
                     <div className="relative w-full overflow-auto">
                         <table className="w-full caption-bottom text-sm">
                             <thead>
                                 <tr className="border-b">
-                                    <th className="h-12 px-4 text-left align-middle">Title</th>
-                                    <th className="h-12 px-4 text-left align-middle">Serial Number</th>
-                                    {session.user.isAdmin && <th className="h-12 px-4 text-left align-middle">Owner</th>}
-                                    {session.user.isAdmin && <th className="h-12 px-4 text-left align-middle">History</th>}
-                                    {session.user.isAdmin && <th className="h-12 px-4 text-left align-middle">Actions</th>}
+                                    <th className="h-12 px-4 text-left align-middle text-center">Title</th>
+                                    <th className="h-12 px-4 text-left align-middle text-center">Serial Number</th>
+                                    {session.user.isAdmin && <th className="h-12 px-4 text-left align-middle text-center">Owner</th>}
+                                    {session.user.isAdmin && <th className="h-12 px-4 text-left align-middle text-center">History</th>}
+                                    {session.user.isAdmin && <th className="h-12 px-4 text-left align-middle text-center">Actions</th>}
                                 </tr>
                             </thead>
                             <tbody>
                                 {equipment.map((item) => (
                                     <tr key={item.id} className="border-b">
-                                        <td className="p-4 align-middle">{item.title}</td>
-                                        <td className="p-4 align-middle">{item.description}</td>
+                                        <td className="p-4 align-middle text-center">{item.title}</td>
+                                        <td className="p-4 align-middle text-center">{item.description}</td>
                                         {session.user.isAdmin && (
-                                            <td className="p-4 align-middle">
+                                            <td className="p-4 align-middle text-center">
                                                 {item.user ? `${item.user.firstName} ${item.user.lastName}` : 'N/A'}
                                             </td>
                                         )}
                                         {session.user.isAdmin && (
-                                            <td className="p-4 align-middle">
-                                                <Link href="#" className="text-blue-600">View</Link>
+                                            <td className="p-4 align-middle text-center">
+                                                <Link href="#" className="link-with-transition">View</Link>
                                             </td>
                                         )}
                                         {session.user.isAdmin && (
-                                            <td className="p-4 align-middle">
+                                            <td className="p-4 align-middle text-center">
                                                 {/* Implement onClick handlers for these buttons */}
                                                 {!item.userId ? (
                                                     <Link href={`/equipment/${item.id}/assign`} className="...">Add User</Link>

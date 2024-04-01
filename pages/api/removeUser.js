@@ -1,28 +1,22 @@
-import { getSession } from "next-auth/react";
-import prisma from "../../lib/prisma";
+import { getSession } from "next-auth/react"; // Import getSession
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
-  console.log("removeUser API called");
+  // Check if the request is a POST request
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
+  // Attempt to retrieve the session
   const session = await getSession({ req });
+  console.log("Session:", session);
 
-  if (!session || !session.user || !session.user.isAdmin) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-
-  const { equipmentId } = req.body;
-
-  try {
-    const updatedEquipment = await prisma.equipment.update({
-      where: { id: parseInt(equipmentId) },
-      data: { userId: null },
-    });
-    return res.status(200).json(updatedEquipment);
-  } catch (error) {
-    console.error("Error removing user from equipment:", error);
-    return res.status(500).json({ message: "Failed to remove user from equipment", error: error.message });
+  // Return the session object for debugging purposes
+  if (session) {
+    return res.status(200).json({ message: "Session exists", session });
+  } else {
+    return res.status(200).json({ message: "Session is null" });
   }
 }

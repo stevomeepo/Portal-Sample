@@ -5,6 +5,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export default NextAuth({
+  
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -30,7 +31,7 @@ export default NextAuth({
         const isValid = credentials.password === user.password;
 
         if (isValid) {
-          return { id: user.id, name: user.email, email: user.email };
+          return { id: user.id, name: user.email, email: user.email, isAdmin: user.isAdmin };
         } else {
           throw new Error("Password is incorrect");
         }
@@ -47,15 +48,17 @@ export default NextAuth({
     },
     async session({ session, token }) {
         session.user.id = token.uid;
+        session.user.isAdmin = token.isAdmin;
         const user = await prisma.user.findUnique({
           where: { id: token.uid },
         });
-        if (user) {
-          session.user.name = user.firstName;
+        if (session && user) {
+          session.user.id = user.id;
           session.user.firstName = user.firstName;
           session.user.isAdmin = user.isAdmin;
         }
         return session;
     },
   },
+  secret: process.env.NEXTAUTH_SECRET,
 });

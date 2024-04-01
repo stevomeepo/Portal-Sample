@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { VscHome, VscPackage, VscCalendar } from "react-icons/vsc";
 
 const Sidebar = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -9,8 +10,6 @@ const Sidebar = () => {
     useEffect(() => {
         document.body.classList.toggle('sidebar-open', sidebarOpen);
     }, [sidebarOpen]);
-
-    const closeSidebar = () => setSidebarOpen(false);
 
     // Navigate and close sidebar
     const navigateAndCloseSidebar = (path) => {
@@ -24,30 +23,28 @@ const Sidebar = () => {
             <div className="flex">
                 <button onClick={() => setSidebarOpen(!sidebarOpen)} 
                     className={`hamburger hamburger--spin ${sidebarOpen ? 'is-active' : ''}`} 
-                    type="button">
+                    type="button"
+                    style={{ marginLeft: '5px' }}>
                     <span className="hamburger-box">
                         <span className="hamburger-inner"></span>
                     </span>
                 </button>
-                <div className="sidebar">
-                    <div className="flex flex-col h-full text-center">
-                            <nav className="flex flex-col space-y-4 flex-grow">
-                                <Link className="sidebar-link-text" onClick={() => navigateAndCloseSidebar('/dashboard')} href="/dashboard" passHref>
-                                    <span>🏠</span>
-                                    <span className="sidebar-link-text">Dashboard</span>
-                                </Link>
-                                <Link className="sidebar-icon" onClick={() => navigateAndCloseSidebar('/assets')} href="/assets" passHref>
-                                    <span>💼</span>
-                                    <span className="sidebar-link-text">Assets</span>
-                                </Link>
-                                {/* Additional links */}
-                            </nav>
-                            {/* Bottom section for sign out or additional actions */}
-                            <div className="space-y-4 pb-12">
-                                {/* Logout or other actions */}
-                            </div>
-                        </div>
-                    </div>
+                <div className="sidebar flex flex-col justify-between">
+                    <nav className="flex flex-col space-y-4">
+                        <Link className="sidebar-icon" onClick={() => navigateAndCloseSidebar('/dashboard')} href="/dashboard" passHref>
+                            <VscHome />
+                            <span className="sidebar-link-text" style={{ marginLeft: '8px' }}>Dashboard</span>
+                        </Link>
+                        <Link className="sidebar-icon" onClick={() => navigateAndCloseSidebar('/assets')} href="/assets" passHref>
+                            <VscPackage />
+                            <span className="sidebar-link-text" style={{ marginLeft: '8px' }}>Assets</span>
+                        </Link>
+                        <Link className="sidebar-icon" onClick={() => navigateAndCloseSidebar('/assets')} href="/assets" passHref>
+                            <VscCalendar />
+                            <span className="sidebar-link-text" style={{ marginLeft: '8px' }}>Calendar</span>
+                        </Link>
+                    </nav>
+                </div>
             </div>
         </>
     );

@@ -20,8 +20,8 @@ const Dashboard = () => {
     const userName = session.user?.firstName || 'User';
 
     return (
-        <div>
-            <header className="flex justify-center p-4">
+        <div className="min-h-screen bg-gray-100 p-8">
+            <header className="flex justify-center">
                 <h2>{userName}'s Dashboard - Enerlites</h2>
             </header>
             {/* Other dashboard content */}
