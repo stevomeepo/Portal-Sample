@@ -12,11 +12,10 @@ const Layout = ({ children }) => {
     const isLoginPage = router.pathname === "/";
 
     return (
-        <div className={`flex h-screen overflow-hidden ${!isLoginPage ? 'with-sidebar' : ''}`}>
+        <div className={isLoginPage ? '' : 'main-content'}>
             {!isLoginPage && <Sidebar />}
             <div className={`flex-1 flex flex-col ${!isLoginPage ? 'with-sidebar' : ''}`}>
                 <header>
-                    {/* Header content */}
                     {session && (
                         <div className="logout-container">
                             <button onClick={() => signOut()} className="logout-button">
@@ -30,11 +29,6 @@ const Layout = ({ children }) => {
                 </header>
                 <main className="flex-1 overflow-y-auto">
                     <div className="min-h-screen bg-gray-100">
-                        {/* {!isLoginPage && (
-                            <Link href="/dashboard">
-                                <img src="/enerlites.jpg" alt="Logo" className="mx-auto pt-4 cursor-pointer" style={{ width: '100px', height: 'auto' }} />
-                            </Link>
-                        )} */}
                         {children}
                     </div>
                 </main>

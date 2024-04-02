@@ -21,7 +21,7 @@ const Sidebar = () => {
 
     return (
         <>
-            <div className={`fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm z-20 ${sidebarOpen ? '' : 'hidden'}`} onClick={() => setSidebarOpen(false)}></div>
+            <div className={`${sidebarOpen ? '' : 'hidden'}`} onClick={() => setSidebarOpen(false)}></div>
             <div className="flex">
                 <button onClick={() => setSidebarOpen(!sidebarOpen)} 
                     className={`hamburger hamburger--spin ${sidebarOpen ? 'is-active' : ''}`} 

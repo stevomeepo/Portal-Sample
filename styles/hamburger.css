@@ -1,5 +1,17 @@
 @import "hamburgers/dist/hamburgers.min.css";
 
+
+.sidebar-open .main-content {
+  margin-left: 300px; /* Match the expanded sidebar width */
+  transition: margin-left 0.3s ease; /* Smooth transition */
+}
+
+/* When the sidebar is not open, ensure the main content takes full width */
+.main-content {
+  margin-left: 80px; /* Match the collapsed sidebar width */
+  transition: margin-left 0.3s ease; /* Smooth transition */
+}
+
 .hamburger {
     display: block; /* Make it always visible */
     z-index: 50;
@@ -51,8 +63,7 @@
 }
 
 .with-sidebar .flex-1 {
-  transition: margin-left 0.3s ease;
-  margin-left: 35px; /* Adjust based on the collapsed sidebar width */
+  transition: margin-left 0.3s ease; /* Adjust based on the collapsed sidebar width */
 }
 
 /* Adjustments for other elements */
