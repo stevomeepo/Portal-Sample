@@ -1,10 +1,7 @@
 {
   "/_document": "pages/_document.js",
-  "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
-  "/": "pages/index.js",
-  "/dashboard": "pages/dashboard.js",
-  "/assets": "pages/assets.js",
+  "/_app": "pages/_app.js",
   "/api/auth/[...nextauth]": "pages/api/auth/[...nextauth].js",
-  "/api/removeUser": "pages/api/removeUser.js"
+  "/assets": "pages/assets.js"
 }

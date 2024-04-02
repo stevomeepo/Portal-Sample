@@ -5,6 +5,7 @@ import Sidebar from '../components/Sidebar';
 
 const Dashboard = () => {
     const { data: session, status } = useSession();
+    console.log("Session:", session);
     const loading = status === "loading";
     const router = useRouter();
   

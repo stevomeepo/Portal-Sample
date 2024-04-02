@@ -1,13 +1,17 @@
 import { useSession, getSession } from "next-auth/react";
 import { PrismaClient } from "@prisma/client";
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const prisma = new PrismaClient();
 
-export default function Assets({ equipment }) {
+export default function Assets({ equipment: initialEquipment, users }) {
     const { data: session } = useSession();
-    console.log("Session:", session);
+    const [equipment, setEquipment] = useState(initialEquipment);
+
+    useEffect(() => {
+        setEquipment(initialEquipment);
+    }, [initialEquipment]);
 
     if (!session) return <div>Access Denied</div>;
 
@@ -27,11 +31,38 @@ export default function Assets({ equipment }) {
             }
 
             const updatedEquipment = await response.json();
-            // Handle the response as needed, e.g., update state, show notification, etc.
-            console.log('User removed from equipment:', updatedEquipment);
+
+            setEquipment(currentEquipment =>
+                currentEquipment.map(item =>
+                    item.id === updatedEquipment.id ? updatedEquipment : item
+                )
+            );
         } catch (error) {
             console.error('Failed to remove user:', error);
-            // Handle errors, e.g., show error notification
+        }
+    };
+
+    const addUser = async (equipmentId, userId) => {
+        try {
+            const response = await fetch('/api/addUser', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ equipmentId, userId }),
+                credentials: 'include',
+            });
+    
+            if (!response.ok) {
+                throw new Error(`Error: ${response.statusText}`);
+            }
+    
+            const updatedEquipment = await response.json();
+            setEquipment(currentEquipment =>
+                currentEquipment.map(item =>
+                    item.id === updatedEquipment.id ? { ...item, user: updatedEquipment.user, userId: updatedEquipment.userId } : item
+                )
+            );
+        } catch (error) {
+            console.error('Failed to add user to equipment:', error);
         }
     };
 
@@ -63,16 +94,20 @@ export default function Assets({ equipment }) {
                                         )}
                                         {session.user.isAdmin && (
                                             <td className="p-4 align-middle text-center">
-                                                <Link href="#" className="link-with-transition">View</Link>
+                                                <Link href={`/assets/${item.id}`} className="link-with-transition">View</Link>
                                             </td>
                                         )}
                                         {session.user.isAdmin && (
                                             <td className="p-4 align-middle text-center">
-                                                {/* Implement onClick handlers for these buttons */}
                                                 {!item.userId ? (
-                                                    <Link href={`/equipment/${item.id}/assign`} className="...">Add User</Link>
+                                                    <select onChange={(e) => addUser(item.id, e.target.value)}>
+                                                        <option value="">Assign User</option>
+                                                        {users.map(user => (
+                                                            <option key={user.id} value={user.id}>{user.firstName} {user.lastName}</option>
+                                                        ))}
+                                                    </select>
                                                 ) : (
-                                                    <button className="..." onClick={() => removeUser(item.id)}>Remove User</button>
+                                                    <button className="red-link-with-transition text-red-600" onClick={() => removeUser(item.id)}>Remove User</button>
                                                 )}
                                             </td>
                                         )}
@@ -118,9 +153,16 @@ export async function getServerSideProps(context) {
         });
     }
 
+    let users = [];
+    if (session.user.isAdmin) {
+      users = await prisma.user.findMany({
+        select: { id: true, firstName: true, lastName: true }
+      });
+    }
+    users = JSON.parse(JSON.stringify(users));
     equipment = JSON.parse(JSON.stringify(equipment));
 
     return {
-        props: { equipment },
+        props: { equipment, users },
     };
 }

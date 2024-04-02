@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { VscHome, VscPackage, VscCalendar } from "react-icons/vsc";
+import { RxVideo } from "react-icons/rx";
+import { PiChartLineUp } from "react-icons/pi";
 
 const Sidebar = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -42,6 +44,14 @@ const Sidebar = () => {
                         <Link className="sidebar-icon" onClick={() => navigateAndCloseSidebar('/assets')} href="/assets" passHref>
                             <VscCalendar />
                             <span className="sidebar-link-text" style={{ marginLeft: '8px' }}>Calendar</span>
+                        </Link>
+                        <Link className="sidebar-icon" onClick={() => navigateAndCloseSidebar('/dashboard')} href="/assets" passHref>
+                            <PiChartLineUp />
+                            <span className="sidebar-link-text" style={{ marginLeft: '8px' }}>Performance</span>
+                        </Link>
+                        <Link className="sidebar-icon" onClick={() => navigateAndCloseSidebar('/dashboard')} href="/assets" passHref>
+                            <RxVideo />
+                            <span className="sidebar-link-text" style={{ marginLeft: '8px' }}>Training</span>
                         </Link>
                     </nav>
                 </div>

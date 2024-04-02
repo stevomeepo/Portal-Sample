@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export default NextAuth({
+export const authOptions = {
   
   providers: [
     CredentialsProvider({
@@ -47,18 +47,20 @@ export default NextAuth({
       return token;
     },
     async session({ session, token }) {
-        session.user.id = token.uid;
-        session.user.isAdmin = token.isAdmin;
-        const user = await prisma.user.findUnique({
-          where: { id: token.uid },
-        });
-        if (session && user) {
-          session.user.id = user.id;
-          session.user.firstName = user.firstName;
-          session.user.isAdmin = user.isAdmin;
-        }
-        return session;
+      session.user.id = token.uid;
+      session.user.isAdmin = token.isAdmin;
+      const user = await prisma.user.findUnique({
+        where: { id: token.uid },
+      });
+      if (session && user) {
+        session.user.id = user.id;
+        session.user.firstName = user.firstName;
+        session.user.isAdmin = user.isAdmin;
+      }
+      return session;
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
-});
+};
+
+export default NextAuth(authOptions);
