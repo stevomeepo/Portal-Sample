@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { VscHome, VscPackage, VscCalendar } from "react-icons/vsc";
+import { VscHome, VscPackage, VscCalendar, VscAccount  } from "react-icons/vsc";
 import { RxVideo } from "react-icons/rx";
 import { PiChartLineUp } from "react-icons/pi";
 
@@ -33,6 +33,10 @@ const Sidebar = () => {
                 </button>
                 <div className="sidebar flex flex-col justify-between">
                     <nav className="flex flex-col space-y-4">
+                        <Link className="sidebar-icon" onClick={() => navigateAndCloseSidebar('/dashboard')} href="/dashboard" passHref>
+                            <VscAccount />
+                            <span className="sidebar-link-text" style={{ marginLeft: '8px' }}>Profile</span>
+                        </Link>
                         <Link className="sidebar-icon" onClick={() => navigateAndCloseSidebar('/dashboard')} href="/dashboard" passHref>
                             <VscHome />
                             <span className="sidebar-link-text" style={{ marginLeft: '8px' }}>Dashboard</span>

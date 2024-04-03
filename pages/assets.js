@@ -1,9 +1,10 @@
 import { useSession, getSession } from "next-auth/react";
 import { PrismaClient } from "@prisma/client";
 import Link from 'next/link';
-import { useState, useEffect, Fragment } from 'react';
+import { useState, useEffect, Fragment, useRef, useMemo, requestSort } from 'react';
 import { Dialog, Transition, Combobox } from '@headlessui/react';
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
+import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/solid';
+import styles from '../styles/searchbar.css';
 
 const prisma = new PrismaClient();
 
@@ -14,9 +15,73 @@ export default function Assets({ equipment: initialEquipment, users }) {
     const [selectedDescription, setSelectedDescription] = useState('');
     const [selectedUserName, setSelectedUserName] = useState('');
     const [selectedEquipmentId, setSelectedEquipmentId] = useState(null);
-    const [searchTerm, setSearchTerm] = useState(""); // State to hold the search term for equipment filtering
-    const [selectedUser, setSelectedUser] = useState(users[0]); // State for selected user in Combobox
-    const [userQuery, setUserQuery] = useState(""); // State to hold the search term for user filtering in Combobox
+    const [searchTerm, setSearchTerm] = useState("");
+    const [selectedUser, setSelectedUser] = useState(users[0]);
+    const [userQuery, setUserQuery] = useState("");
+    const [isExpanded, setIsExpanded] = useState(false);
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
+    const searchBoxRef = useRef(null);
+
+    const sortedEquipment = useMemo(() => {
+        let sortableItems = [...equipment];
+        if (sortConfig.key) {
+            sortableItems.sort((a, b) => {
+                const keyParts = sortConfig.key.split('.');
+                let aValue = a[keyParts[0]];
+                let bValue = b[keyParts[0]];
+    
+                // If the key is nested, adjust the values to compare
+                if (keyParts.length > 1) {
+                    aValue = aValue ? aValue[keyParts[1]] : '';
+                    bValue = bValue ? bValue[keyParts[1]] : '';
+                }
+    
+                if (aValue < bValue) {
+                    return sortConfig.direction === 'ascending' ? -1 : 1;
+                }
+                if (aValue > bValue) {
+                    return sortConfig.direction === 'ascending' ? 1 : -1;
+                }
+                return 0;
+            });
+        }
+        return sortableItems;
+    }, [equipment, sortConfig]);
+
+    const requestSort = (key) => {
+        let direction = 'ascending';
+        if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+            direction = 'descending';
+        }
+        setSortConfig({ key, direction });
+    };
+
+    const toggleSearchBar = () => {
+        setIsExpanded(!isExpanded);
+        if (!isExpanded) {
+            // Focus on the input when expanding
+            document.querySelector('.input-search').focus();
+        } else {
+            // Clear the search term and blur the input when collapsing
+            setSearchTerm("");
+            document.querySelector('.input-search').blur();
+        }
+    };
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (searchBoxRef.current && !searchBoxRef.current.contains(event.target)) {
+                setIsExpanded(false); // Collapse the search bar
+            }
+        }
+    
+        // Add event listener
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            // Remove event listener on cleanup
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [searchBoxRef]);
 
     useEffect(() => {
         setEquipment(initialEquipment);
@@ -109,28 +174,42 @@ const confirmRemoveUser = async () => {
         <div className="min-h-screen bg-gray-100 p-8">
             <h2 className="text-xl font-semibold mb-4">Assets</h2>
             {/* Search Bar */}
-            <input
-                type="text"
-                placeholder="Search by title or description..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="mb-4 p-2 border rounded"
-            />
+            <div className="search-box pb-5" ref={searchBoxRef}>
+                <button className={`search-button ${isExpanded ? 'active' : ''}`} onClick={toggleSearchBar}>
+                    <i className={`fas ${isExpanded ? 'fa-times' : 'fa-search'}`}></i>
+                </button>
+                <input
+                    type="text"
+                    className="input-search"
+                    placeholder="Search..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onFocus={() => setIsExpanded(true)}
+                />
+            </div>
             <div className="rounded-lg border text-card-foreground bg-white shadow-md">
                 <div className="p-0">
                     <div className="relative w-full overflow-auto">
                         <table className="w-full caption-bottom text-sm">
                             <thead>
                                 <tr className="border-b">
-                                    <th className="h-12 px-4 text-left align-middle text-center">Title</th>
-                                    <th className="h-12 px-4 text-left align-middle text-center">Serial Number</th>
-                                    {session.user.isAdmin && <th className="h-12 px-4 text-left align-middle text-center">Owner</th>}
+                                    <th className="h-12 px-4 text-left align-middle text-center" onClick={() => requestSort('title')}>
+                                        Title <i className="fas fa-sort"></i>
+                                    </th>
+                                    <th className="h-12 px-4 text-left align-middle text-center" onClick={() => requestSort('description')}>
+                                        Serial Number <i className="fas fa-sort"></i>
+                                    </th>
+                                    {session.user.isAdmin && (
+                                        <th className="h-12 px-4 text-left align-middle text-center" onClick={() => requestSort('user.firstName')}>
+                                            Owner <i className="fas fa-sort"></i>
+                                        </th>
+                                    )}
                                     {session.user.isAdmin && <th className="h-12 px-4 text-left align-middle text-center">History</th>}
                                     {session.user.isAdmin && <th className="h-12 px-4 text-left align-middle text-center">Actions</th>}
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredEquipment.map((item) => (
+                                {sortedEquipment.map((item) => (
                                     <tr key={item.id} className="border-b">
                                         <td className="p-4 align-middle text-center">{item.title}</td>
                                         <td className="p-4 align-middle text-center">{item.description}</td>
