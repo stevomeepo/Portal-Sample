@@ -28,7 +28,7 @@ const Layout = ({ children }) => {
                     )}
                 </header>
                 <main className="flex-1 overflow-y-auto">
-                    <div className="min-h-screen bg-gray-100">
+                    <div className="min-h-screen">
                         {children}
                     </div>
                 </main>

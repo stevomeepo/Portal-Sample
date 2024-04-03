@@ -34,27 +34,27 @@ const Sidebar = () => {
                 <div className="sidebar flex flex-col justify-between">
                     <nav className="flex flex-col space-y-4">
                         <Link className="sidebar-icon" onClick={() => navigateAndCloseSidebar('/dashboard')} href="/dashboard" passHref>
-                            <VscAccount />
-                            <span className="sidebar-link-text" style={{ marginLeft: '8px' }}>Profile</span>
-                        </Link>
-                        <Link className="sidebar-icon" onClick={() => navigateAndCloseSidebar('/dashboard')} href="/dashboard" passHref>
-                            <VscHome />
+                            <VscHome size="30"/>
                             <span className="sidebar-link-text" style={{ marginLeft: '8px' }}>Dashboard</span>
                         </Link>
+                        <Link className="sidebar-icon" onClick={() => navigateAndCloseSidebar('/profile')} href="/profile" passHref>
+                            <VscAccount size="25"/>
+                            <span className="sidebar-link-text" style={{ marginLeft: '8px' }}>Profile</span>
+                        </Link>
                         <Link className="sidebar-icon" onClick={() => navigateAndCloseSidebar('/assets')} href="/assets" passHref>
-                            <VscPackage />
+                            <VscPackage size="30"/>
                             <span className="sidebar-link-text" style={{ marginLeft: '8px' }}>Assets</span>
                         </Link>
                         <Link className="sidebar-icon" onClick={() => navigateAndCloseSidebar('/assets')} href="/assets" passHref>
-                            <VscCalendar />
+                            <VscCalendar size="25"/>
                             <span className="sidebar-link-text" style={{ marginLeft: '8px' }}>Calendar</span>
                         </Link>
                         <Link className="sidebar-icon" onClick={() => navigateAndCloseSidebar('/dashboard')} href="/assets" passHref>
-                            <PiChartLineUp />
+                            <PiChartLineUp size="30"/>
                             <span className="sidebar-link-text" style={{ marginLeft: '8px' }}>Performance</span>
                         </Link>
                         <Link className="sidebar-icon" onClick={() => navigateAndCloseSidebar('/dashboard')} href="/assets" passHref>
-                            <RxVideo />
+                            <RxVideo size="30"/>
                             <span className="sidebar-link-text" style={{ marginLeft: '8px' }}>Training</span>
                         </Link>
                     </nav>

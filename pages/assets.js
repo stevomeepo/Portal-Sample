@@ -1,10 +1,11 @@
 import { useSession, getSession } from "next-auth/react";
 import { PrismaClient } from "@prisma/client";
 import Link from 'next/link';
-import { useState, useEffect, Fragment, useRef, useMemo, requestSort } from 'react';
+import { useState, useEffect, Fragment, useRef, useMemo } from 'react';
 import { Dialog, Transition, Combobox } from '@headlessui/react';
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/solid';
+import { ChevronDownIcon } from '@heroicons/react/outline';
 import styles from '../styles/searchbar.css';
+import { useRouter } from 'next/router';
 
 const prisma = new PrismaClient();
 
@@ -17,44 +18,20 @@ export default function Assets({ equipment: initialEquipment, users }) {
     const [selectedEquipmentId, setSelectedEquipmentId] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedUser, setSelectedUser] = useState(users[0]);
-    const [userQuery, setUserQuery] = useState("");
     const [isExpanded, setIsExpanded] = useState(false);
-    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
     const searchBoxRef = useRef(null);
+    const router = useRouter();
 
-    const sortedEquipment = useMemo(() => {
-        let sortableItems = [...equipment];
-        if (sortConfig.key) {
-            sortableItems.sort((a, b) => {
-                const keyParts = sortConfig.key.split('.');
-                let aValue = a[keyParts[0]];
-                let bValue = b[keyParts[0]];
-    
-                // If the key is nested, adjust the values to compare
-                if (keyParts.length > 1) {
-                    aValue = aValue ? aValue[keyParts[1]] : '';
-                    bValue = bValue ? bValue[keyParts[1]] : '';
-                }
-    
-                if (aValue < bValue) {
-                    return sortConfig.direction === 'ascending' ? -1 : 1;
-                }
-                if (aValue > bValue) {
-                    return sortConfig.direction === 'ascending' ? 1 : -1;
-                }
-                return 0;
-            });
-        }
-        return sortableItems;
-    }, [equipment, sortConfig]);
-
-    const requestSort = (key) => {
-        let direction = 'ascending';
-        if (sortConfig.key === key && sortConfig.direction === 'ascending') {
-            direction = 'descending';
-        }
-        setSortConfig({ key, direction });
-    };
+    const handleSort = (sortField) => {
+        const currentSortField = router.query.sortField;
+        const currentSortOrder = router.query.sortOrder;
+        const newSortOrder = currentSortField === sortField && currentSortOrder === 'asc' ? 'desc' : 'asc';
+      
+        router.push({
+          pathname: router.pathname,
+          query: { ...router.query, sortField, sortOrder: newSortOrder },
+        }, undefined, { shallow: true }).then(() => window.location.reload());
+      };
 
     const toggleSearchBar = () => {
         setIsExpanded(!isExpanded);
@@ -83,22 +60,7 @@ export default function Assets({ equipment: initialEquipment, users }) {
         };
     }, [searchBoxRef]);
 
-    useEffect(() => {
-        setEquipment(initialEquipment);
-    }, [initialEquipment]);
-
     if (!session) return <div>Access Denied</div>;
-
-    // Filter equipment based on the search term
-    const filteredEquipment = equipment.filter(item =>
-        item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.description.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    // Filter users based on the search term in Combobox
-    const filteredUsers = userQuery === '' ? users : users.filter(user =>
-        user.name.toLowerCase().replace(/\s+/g, '').includes(userQuery.toLowerCase().replace(/\s+/g, ''))
-    );
 
     const openModal = (equipmentId, description, userName) => {
         setSelectedEquipmentId(equipmentId);
@@ -111,40 +73,40 @@ export default function Assets({ equipment: initialEquipment, users }) {
         setIsModalOpen(false);
     };
 
-const confirmRemoveUser = async () => {
-    if (!selectedEquipmentId) {
-        console.error("No equipment selected for user removal.");
-        return;
-    }
-
-    try {
-        const response = await fetch('/api/removeUser', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ equipmentId: selectedEquipmentId }),
-            credentials: 'include',
-        });
-
-        if (!response.ok) {
-            throw new Error(`Error: ${response.statusText}`);
+    const confirmRemoveUser = async () => {
+        if (!selectedEquipmentId) {
+            console.error("No equipment selected for user removal.");
+            return;
         }
 
-        const updatedEquipment = await response.json();
-        
-        // Update the equipment state to reflect the change
-        setEquipment(currentEquipment =>
-            currentEquipment.map(item =>
-                item.id === updatedEquipment.id ? updatedEquipment : item
-            )
-        );
-        
-        closeModal();
-    } catch (error) {
-        console.error('Failed to remove user from equipment:', error);
-    }
-};
+        try {
+            const response = await fetch('/api/removeUser', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ equipmentId: selectedEquipmentId }),
+                credentials: 'include',
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error: ${response.statusText}`);
+            }
+
+            const updatedEquipment = await response.json();
+            
+            // Update the equipment state to reflect the change
+            setEquipment(currentEquipment =>
+                currentEquipment.map(item =>
+                    item.id === updatedEquipment.id ? updatedEquipment : item
+                )
+            );
+            
+            closeModal();
+        } catch (error) {
+            console.error('Failed to remove user from equipment:', error);
+        }
+    };
 
     const addUser = async (equipmentId, userId) => {
         try {
@@ -176,11 +138,11 @@ const confirmRemoveUser = async () => {
             {/* Search Bar */}
             <div className="search-box pb-5" ref={searchBoxRef}>
                 <button className={`search-button ${isExpanded ? 'active' : ''}`} onClick={toggleSearchBar}>
-                    <i className={`fas ${isExpanded ? 'fa-times' : 'fa-search'}`}></i>
+                    <i className="fas fa-search"></i>
                 </button>
                 <input
                     type="text"
-                    className="input-search"
+                    className="input-search p-2px"
                     placeholder="Search..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -193,14 +155,14 @@ const confirmRemoveUser = async () => {
                         <table className="w-full caption-bottom text-sm">
                             <thead>
                                 <tr className="border-b">
-                                    <th className="h-12 px-4 text-left align-middle text-center" onClick={() => requestSort('title')}>
+                                    <th className="h-12 px-4 text-left align-middle text-center" onClick={() => handleSort('title')}>
                                         Title <i className="fas fa-sort"></i>
                                     </th>
-                                    <th className="h-12 px-4 text-left align-middle text-center" onClick={() => requestSort('description')}>
+                                    <th className="h-12 px-4 text-left align-middle text-center" onClick={() => handleSort('description')}>
                                         Serial Number <i className="fas fa-sort"></i>
                                     </th>
                                     {session.user.isAdmin && (
-                                        <th className="h-12 px-4 text-left align-middle text-center" onClick={() => requestSort('user.firstName')}>
+                                        <th className="h-12 px-4 text-left align-middle text-center" onClick={() => handleSort('user')}>
                                             Owner <i className="fas fa-sort"></i>
                                         </th>
                                     )}
@@ -209,7 +171,10 @@ const confirmRemoveUser = async () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {sortedEquipment.map((item) => (
+                                {equipment.filter(item =>
+                                    item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                    item.description.toLowerCase().includes(searchTerm.toLowerCase())
+                                ).map((item) => (
                                     <tr key={item.id} className="border-b">
                                         <td className="p-4 align-middle text-center">{item.title}</td>
                                         <td className="p-4 align-middle text-center">{item.description}</td>
@@ -321,35 +286,68 @@ export async function getServerSideProps(context) {
         };
     }
 
-    let equipment;
-    if (session.user.isAdmin) {
-        // Fetch all equipment for admin
-        equipment = await prisma.equipment.findMany({
-          include: {
-              user: true,
-          },
-      });
+    const { query } = context;
+    const sortField = query.sortField || 'title';
+    const sortOrder = query.sortOrder || 'asc';
+    const searchTerm = query.searchTerm || '';
+
+    let orderByClause;
+    if (sortField === 'ownerName') {
+        orderByClause = {
+            user: {
+                firstName: sortOrder,
+            },
+        };
     } else {
-        equipment = await prisma.equipment.findMany({
-            where: {
-                userId: session.user.id,
-            },
-            include: {
-              user: true,
-            },
-        });
+        orderByClause = {
+            [sortField]: sortOrder,
+        };
     }
+
+    let equipmentQueryOptions = {
+        where: {
+            AND: [
+                {
+                    OR: [
+                        {
+                            title: {
+                                contains: searchTerm,
+                                mode: 'insensitive',
+                            },
+                        },
+                        {
+                            description: {
+                                contains: searchTerm,
+                                mode: 'insensitive',
+                            },
+                        },
+                    ],
+                },
+            ],
+        },
+        include: {
+            user: true,
+        },
+        orderBy: orderByClause,
+    };
+
+    if (!session.user.isAdmin) {
+        equipmentQueryOptions.where.AND.push({ userId: session.user.id });
+    }
+
+    const equipment = await prisma.equipment.findMany(equipmentQueryOptions);
 
     let users = [];
     if (session.user.isAdmin) {
-      users = await prisma.user.findMany({
-        select: { id: true, firstName: true, lastName: true }
-      });
+        users = await prisma.user.findMany({
+            select: { id: true, firstName: true, lastName: true },
+        });
     }
+
     users = JSON.parse(JSON.stringify(users));
-    equipment = JSON.parse(JSON.stringify(equipment));
+    const serializedEquipment = JSON.parse(JSON.stringify(equipment));
 
     return {
-        props: { equipment, users },
+        props: { equipment: serializedEquipment, users },
     };
 }

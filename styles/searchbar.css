@@ -7,7 +7,7 @@
 }
 
 .search-button {
-    width: 40px; /* Adjusted to match your design */
+    width: 50px; /* Adjusted to match your design */
     height: 40px; /* Adjusted to match your design */
     position: absolute;
     right: 0;
@@ -23,7 +23,7 @@
     height: 40px; /* Reduced height */
     width: 40px; /* Reduced width */
     border-style: none;
-    padding: 5px; /* Adjusted padding */
+    padding: 5px 5px 5px 15px; /* Adjusted padding to add more space on the left */
     outline: none;
     border-radius: 20px; /* Adjusted border radius for a smaller size */
     transition: all .5s ease-in-out;
